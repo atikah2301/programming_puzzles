@@ -27,12 +27,20 @@ class Solution:
 
             ptr3.val = summed if summed < 10 else summed-10
             print(f"ptr3 takes value {ptr3.val}")
-            if ptr1.next != None and ptr2.next != None:
-                    ptr3.next = ListNode()
 
-            ptr1 = ptr1.next
-            ptr2 = ptr2.next
+            if ptr1 != None:
+                if ptr1.next != None:
+                    ptr3.next = ListNode()
+            if ptr2 != None:
+                if ptr2.next != None:
+                    ptr3.next = ListNode()
+            if carry == True:
+                ptr3.next = ListNode(val=1)
+
+            ptr1 = ptr1.next if ptr1 != None else None
+            ptr2 = ptr2.next if ptr2 != None else None
             ptr3 = ptr3.next
+            print(l3)
             print()
 
         return l3
@@ -42,13 +50,21 @@ class Solution:
 if __name__ == "__main__":
     sol = Solution()
 
-    l1 = ListNode(val=2)
-    l1.next = ListNode(val=4)
-    l1.next.next = ListNode(val=3)
+    def make_linked_list(vals=[0]):
+        l = ListNode()
+        ptr = l
+        for i in range(len(vals)):
+            ptr.val = vals[i]
+            if i != len(vals)-1:
+                ptr.next = ListNode()
+            ptr = ptr.next
+        return l
 
-    l2 = ListNode(val=5)
-    l2.next = ListNode(val=6)
-    l2.next.next = ListNode(val=4)
+    # l1 = make_linked_list([2,4,3])
+    # l2 = make_linked_list([5,6,4])
+    l1 = make_linked_list([9,9,9,9])
+    l2 = make_linked_list([9,9,9,9,9,9,9])
+    # Expected answer: 10,009,998 = 8 -> 9 -> 9 -> 9 -> 0 -> 0 -> 0 -> 1 -> None
 
     # print(l1)
     # print(l2)
