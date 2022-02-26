@@ -1,3 +1,5 @@
+# Easy difficulty
+
 class Solution:
     ## This version of the code is memory efficient but has time complexity O(n^2)
     def twoSum(self, nums: list[int], target: int) -> list[int]:
