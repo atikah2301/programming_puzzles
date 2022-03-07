@@ -25,6 +25,48 @@ def pascalsTriangle(row, col):
     #print(f"{top} / {bottom}")
     return int(top/bottom)
 
+def pascalsRow(row):
+    # counting rows from 0
+    values = []
+    for col in range(row+1):
+        values.append(pascalsTriangle(row, col))
+    return values
+
+def pascalsRowRatios(row):
+    # counting rows from 0
+    values = []
+    for column in range(row + 1):
+        pascal = pascalsTriangle(row, column)
+        values.append(pascal/(2**row))
+    return values
+
+def ceil(num):
+    if num != int(num):
+        return int(num)+1.0
+    else:
+        return num
+
+def pascalsRowThreshold(row):
+    # counting rows from 0
+    values = []
+    for column in range(row + 1):
+        pascal = pascalsTriangle(row, column)
+        values.append(ceil((2 ** row) / pascal))
+    return values
+
+def cupsNeeded(n):
+    cups_needed_to_fill_tower = [[1.0]]
+    row = [1.0]
+    for i in range(n): # for each row
+        next_row = pascalsRowThreshold(i+1)
+        for j in range(0, len(next_row)//2): # for the first half of values in current row
+            next_row[j] = next_row[j] + row[j]
+        for j in range(len(next_row)//2, len(next_row)): # for the second half
+            next_row[j] = next_row[j] + row[j-1]
+        cups_needed_to_fill_tower.append(next_row)
+        row = next_row
+    return cups_needed_to_fill_tower
+
 def printPascalsTriangle(row):
     for i in range(row+1):
         for j in range(row-i+1):
@@ -32,6 +74,19 @@ def printPascalsTriangle(row):
         for j in range(i+1):
             print(pascalsTriangle(i,j), end=" ")
         print("")
+
+def champagneTower(poured, query_row, query_glass):
+    cups_needed = cupsNeeded(query_row)[query_row][query_glass]
+    print(cups_needed)
+    if poured >= cups_needed:
+        return 1.0
+    else:
+        ratio = pascalsRowRatios(query_row)[query_glass]
+        fill = 1 - ratio*(cups_needed - poured)
+        if fill <= 0:
+            return 0.0
+        else:
+            return fill
 
 class Solution:
     def champagneRemaining(self, poured: int):
@@ -59,36 +114,27 @@ class Solution:
         else: # if you queried a glass in an empty row, or a glass that doesn't exist
             return 0.0
 
-
 if __name__ == '__main__':
     sol = Solution()
-    poured = 104
-    query_row = 14
-    query_glass = -1 # query_glass <= query_row < 100
-    for i in range(0, query_row+3):
-        print(f"row {i}: ", end=" ")
-        for _ in range(query_row, i-2, -1):
-            print("  ", end="")
-        for j in range(0, i+1):
-            print(sol.champagneTower(poured, i, j), end=" ")
-        print()
+    poured = 6
+    query_row = 3
+    query_glass = 3 # query_glass <= query_row < 100
+    # for i in range(0, query_row+3):
+    #     print(f"row {i}: ", end=" ")
+    #     for _ in range(query_row, i-2, -1):
+    #         print("  ", end="")
+    #     for j in range(0, i+1):
+    #         print(sol.champagneTower(poured, i, j), end=" ")
+    #     print()
     #print(sol.champagneRemaining(poured))
 
-    # Tests
+    # tower = []
+    # for i in range(5):
+    #     tower.append(pascalsRowThreshold(i))
+    # print(tower)
 
-    # 1. Full glass
-    # rows are completely full for poured = 1, 3, 6, 10, 15, 21
-    # for query_row = 0, 1, 2, 3, 4, 5  and below respectively
+    print(champagneTower(poured, query_row, query_glass))
 
-    # Example: poured, row, glass = 6, 2, 0 -- then return 1.0
 
-    # 2. Partially full glass
-    # rows are partially full for poured != the values above
-    # the partially filled row will be last filled query_row + 1
 
-    # Example: poured, row, glass = 7, 4, 2 -- then return 1.0
-
-    # 3. Empty glass
-    # rows are empty for query_row > last filled row for poured value == above,
-    # but empty only for query_row + 1 > last filled row for poured value != above
 
